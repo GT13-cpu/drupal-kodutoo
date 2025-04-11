@@ -1,0 +1,40 @@
+
+services:
+  drupal:
+    image: drupal:10
+    ports:
+      - "8080:80"
+    volumes:
+      - ./modules:/var/www/html/modules
+      - ./themes:/var/www/html/themes
+      - ./profiles:/var/www/html/profiles
+      - ./sites:/var/www/html/sites
+    depends_on:
+      - mariadb
+    environment:
+      PHP_MAILER_URL: smtp://mailhog:1025
+
+  mariadb:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"  # Mailhog UI: http://localhost:8025
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080    # Adminer UI: http://localhost:8081
+
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
